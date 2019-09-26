@@ -1,5 +1,7 @@
 let rectWidth;
 stepSize = 1;
+let imageWidth = 512;
+let imageHeight = 384;
 
 let typeName = [
   'glass',
@@ -33,17 +35,38 @@ function setup() {
   columnD_key = 'd'.charCodeAt(0);
   columnD = 3*width / 4;
   currentColumn = 0;//columnA;
-  img1 = loadImage('assets/01.jpg');
-  img2 = loadImage('assets/02.jpg');
-  img3 = loadImage('assets/03.jpg');
-  images = [img1, img2, img3];
-  columns = [width/4, width/2, 3*width/4]
-  fr = 5;
+  img = loadImage('assets/01.jpg');
+  imgRecyclable = false;
+  // img2 = loadImage('assets/02.jpg');
+  // img3 = loadImage('assets/03.jpg');
+  // images = [img1, img2, img3];
+  // columns = [width/4, width/2, 3*width/4]
+  // fr = 5;
   // frameRate(fr);
+  // img = 
+  lives = 3;
 }
 
 function setStage() {
   background(230);
+  // getImage();
+}
+
+function getImage() {
+  if(Math.round(Math.random())) {
+    // Recyclable
+    type = Math.round(Math.random() * 4);
+    imgRecyclable = true;
+  } else {
+    // Trash
+    type = 5;
+    imgRecyclable = false;
+  }
+  number = Math.floor(Math.random() * typeSize[type]+1);
+  tn = typeName[type];
+  console.log('assets/'+tn+'/'+tn+number+'.jpg');
+  
+  img = loadImage('assets/'+tn+'/'+tn+number+'.jpg');
 }
 
 function draw() {
@@ -51,22 +74,28 @@ function draw() {
   // keep draw() here to continue looping while waiting for keys
   stroke(0);
   // index = 0; index < 200; index++) {
-  ellipse(columns[currentColumn], index, 80, 80);
-  index=index+stepSize;
-  if (index > 600) {
-    index = 0;
-    imgSelect++;
-    if (imgSelect > 2 ){
-      imgSelect = 0;
-    }
-    // fr = fr+1;
-    // if(fr>60) {
-    //   fr = 60;
-    // }
-    stepSize++;
-    // frameRate(fr);
+  if (imgRecyclable) {
+    fill(0,255,0)
+  } else {
+    fill(0,0,0)
   }
-  image(images[imgSelect], columns[currentColumn]-51, index,102,76);
+  ellipse(imageWidth+80,0, 80, 80);
+  // index=index+stepSize;
+  // if (index > 600) {
+  //   index = 0;
+  //   imgSelect++;
+  //   if (imgSelect > 2 ){
+  //     imgSelect = 0;
+  //   }
+  //   // fr = fr+1;
+  //   // if(fr>60) {
+  //   //   fr = 60;
+  //   // }
+  //   stepSize++;
+  //   // frameRate(fr);
+  // }
+  image(img, 0, 0, imageWidth, imageHeight);
+  // image(images[imgSelect], columns[currentColumn]-51, index,102,76);
   // image(img2, columnS-51, index,102,76);
   // image(img3, columnD-51, index-100,102,76);
   
@@ -75,35 +104,41 @@ function draw() {
 
 function keyPressed() {
   let keyIndex = -1;
-  let pressed = key.charCodeAt(0);
+  // let pressed = key.charCodeAt(0);
   // console.log(key.charCodeAt(0));
-  if (key >= 'a' && key <= 'z') {
+  guessRecyclable = false;
+  guessLock = false;
+  if (key == 'r') {
     keyIndex = key.charCodeAt(0) - 'a'.charCodeAt(0);
+    console.log('recycle?');
+    guessRecyclable = true;
+    guessLock = true;
+  } else if (key == 't') {
+    console.log('trash?');
+    guessRecyclable = false;
+    guessLock = true;
   }
-  if (keyIndex === -1) {
-    // If it's not a letter key, clear the screen
-    background(230);
-  } else {
-    // It's a letter key, fill a rectangle
-    randFill_r = Math.floor(Math.random() * 255 + 1);
-    randFill_g = Math.floor(Math.random() * 255 + 1);
-    randFill_b = Math.floor(Math.random() * 255 + 1);
-    fill(randFill_r, randFill_g, randFill_b);
-    let x = map(keyIndex, 0, 25, 0, width - rectWidth);
-    // rect(x, 0, rectWidth, height);
+
+  if(guessLock) {
+    if (guessRecyclable === imgRecyclable) {
+      console.log('Correct!');
+      getImage();
+    } else {
+      console.log('Wrong!');
+      getImage();
+    }
   }
-  if (pressed === columnA_key) {
-    currentColumn--;
-  } 
-  if (pressed === columnS_key) {
-    currentColumn = columnS;
-  }
-  if (pressed === columnD_key) {
-    currentColumn++;
-  }
-  if(currentColumn < 0) {
-    currentColumn = 2;
-  } else if(currentColumn > 2) {
-    currentColumn = 0;
-  }
+  // if (keyIndex === -1) {
+  //   // If it's not a letter key, clear the screen
+  //   background(230);
+  //   getImage();
+  // } else {
+  //   // It's a letter key, fill a rectangle
+  //   randFill_r = Math.floor(Math.random() * 255 + 1);
+  //   randFill_g = Math.floor(Math.random() * 255 + 1);
+  //   randFill_b = Math.floor(Math.random() * 255 + 1);
+  //   fill(randFill_r, randFill_g, randFill_b);
+  //   let x = map(keyIndex, 0, 25, 0, width - rectWidth);
+  //   // rect(x, 0, rectWidth, height);
+  // }
 }
