@@ -1,5 +1,4 @@
 let rectWidth;
-stepSize = 1;
 let imageWidth = 512;
 let imageHeight = 384;
 let roundLength;
@@ -38,7 +37,6 @@ function setup() {
   img = loadImage('assets/01.jpg');
   imgRecyclable = false;
 
-  lives = 3;
   numCorrect = 0;
   numGuessed = 0;
   hh = hour();
