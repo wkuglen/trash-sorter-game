@@ -26,7 +26,7 @@ function setup() {
   if (params.rl) {
     roundLength = params.rl;
   } else {
-    roundLength = 15;
+    roundLength = 20;
   }
   createCanvas(720, 600);
   noStroke();
@@ -101,22 +101,8 @@ function draw() {
   image(img, topLeftW, topLeftH, imageWidth, imageHeight);  
 }
 
-function keyPressed() {
-  let keyIndex = -1;
-  guessRecyclable = false;
-  guessLock = false;
-  if (key == 'r') {
-    keyIndex = key.charCodeAt(0) - 'a'.charCodeAt(0);
-    console.log('recycle?');
-    guessRecyclable = true;
-    guessLock = true;
-  } else if (key == 't') {
-    console.log('trash?');
-    guessRecyclable = false;
-    guessLock = true;
-  }
-
-  if(guessLock && !gameOver) {
+function guess(guessRecyclable) {
+  if (!gameOver) {
     numGuessed++;
     if (guessRecyclable === imgRecyclable) {
       console.log('Correct!');
@@ -126,6 +112,46 @@ function keyPressed() {
       console.log('Wrong!');
       getImage();
     }
+  }
+}
+
+function keyPressed() {
+  let keyIndex = -1;
+  guessRecyclable = false;
+  guessLock = false;
+  if (key == 'r') {
+    keyIndex = key.charCodeAt(0) - 'a'.charCodeAt(0);
+    console.log('recycle?');
+    // guessRecyclable = true;
+    // guessLock = true;
+    guess(true);
+  } else if (key == 't') {
+    console.log('trash?');
+    // guessRecyclable = false;
+    // guessLock = true;
+    guess(false);
+  }
+
+  // if(guessLock && !gameOver) {
+  //   numGuessed++;
+  //   if (guessRecyclable === imgRecyclable) {
+  //     console.log('Correct!');
+  //     numCorrect++;
+  //     getImage();
+  //   } else {
+  //     console.log('Wrong!');
+  //     getImage();
+  //   }
+  // }
+}
+
+function mousePressed() {
+  if (winMouseX > width/2) {
+    // Right
+    guess(true);
+  } else {
+    // Left
+    guess(false);
   }
 }
 
