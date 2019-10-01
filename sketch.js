@@ -3,6 +3,9 @@ let imageWidth = 512;
 let imageHeight = 384;
 let roundLength;
 
+wrongImages = [];
+wrongTypes = [];
+
 let typeName = [
   'glass',
   'paper',
@@ -28,20 +31,29 @@ function setup() {
   } else {
     roundLength = 20;
   }
-  createCanvas(720, 600);
+  var canvas = createCanvas(720, 600);
+  canvas.parent('canvas-holder');
+  console.log(windowWidth);
+  console.log(width);
   noStroke();
   background(230);
   rectWidth = width / 4;
   index = 0;
   imgSelect = 0;
-  img = loadImage('assets/01.jpg');
-  imgRecyclable = false;
+  // img = loadImage('assets/01.jpg');
+  // imgName = 
+  // imgRecyclable = false;
+
 
   numCorrect = 0;
   numGuessed = 0;
+  
+  getImage();
+
   hh = hour();
   mm = minute();
   ss = second();
+  
   gameOver = false;
 }
 
@@ -50,7 +62,10 @@ function setStage() {
   // getImage();
   noStroke();
   textSize(12);
-  text(`r - recycle\nt - trash`, (width-imageWidth)/2, (height-imageHeight)/2+imageHeight+15);
+  text(`r (right) - recycle\nt (left) - trash`, (width-imageWidth)/2, (height-imageHeight)/2+imageHeight+15);
+  textSize(36);
+  text(`♻️`, (width-imageWidth)/2+imageWidth+4, (height-imageHeight)/2+imageHeight);
+  text(`🗑`, (width-imageWidth)/2-40, (height-imageHeight)/2+imageHeight);
 }
 
 function getImage() {
@@ -65,9 +80,10 @@ function getImage() {
   }
   number = Math.floor(Math.random() * typeSize[type]+1);
   tn = typeName[type];
-  console.log('assets/'+tn+'/'+tn+number+'.jpg');
+  imgName = 'assets/'+tn+'/'+tn+number+'.jpg';
+  console.log(imgName);
   
-  img = loadImage('assets/'+tn+'/'+tn+number+'.jpg');
+  img = loadImage(imgName);
 }
 
 function draw() {
@@ -83,22 +99,30 @@ function draw() {
     // GAME OVER
     textSize(24);
     text(`Accuracy: ${numCorrect/numGuessed}\nScore: ${score}`,topLeftW,topLeftH-40);
+    text(`Scroll down to see incorrect items`, topLeftW, topLeftH+30);
     gameOver = true;
+    // Draw a white box over image
+    // stroke(0,255,0);
+    fill(255,255,255)
+    // rect(topLeftW, topLeftH, imageWidth, imageHeight);
+    // drawMissed(topLeftW, topLeftH);
+    fill(0,0,0);
+    
   } else {
+    textSize(12);
     text(`Accuracy: ${numCorrect/numGuessed}\nScore: ${score} | Time Remaining: ${timeLeft}`,topLeftW,topLeftH-20);//imageHeight+100);
+    image(img, topLeftW, topLeftH, imageWidth, imageHeight);  
   }
   // keep draw() here to continue looping while waiting for keys
   stroke(0);
   // index = 0; index < 200; index++) {
   if (imgRecyclable) {
     // fill(0,255,0)
-    stroke(0,255,0);
   } else {
     // fill(0,0,0)
   }
   
   // line(topLeftW, topLeftH, imageWidth+topLeftW, topLeftH);
-  image(img, topLeftW, topLeftH, imageWidth, imageHeight);  
 }
 
 function guess(guessRecyclable) {
@@ -109,23 +133,30 @@ function guess(guessRecyclable) {
       numCorrect++;
       getImage();
     } else {
-      console.log('Wrong!');
+      console.log('Wrong! '+imgName);
+      wrongImages.push(img);
+      wrongTypes.push(tn);
+      divHTML = `<img src="${imgName}" alt="${tn}" height=${imageHeight/4}> This is actually ${tn}.<br>`;
+      var divElement = createDiv(divHTML);
+      divElement.parent('missedImages');
+      // createImg(imgName, alt=imgName);
+      // createP(`This is actually ${tn}`);
       getImage();
     }
   }
 }
 
 function keyPressed() {
-  let keyIndex = -1;
+  // let keyIndex = -1;
   guessRecyclable = false;
-  guessLock = false;
-  if (key == 'r') {
-    keyIndex = key.charCodeAt(0) - 'a'.charCodeAt(0);
+  // guessLock = false;
+  if (key == 'r' || key == 'R') {
+    // keyIndex = key.charCodeAt(0) - 'a'.charCodeAt(0);
     console.log('recycle?');
     // guessRecyclable = true;
     // guessLock = true;
     guess(true);
-  } else if (key == 't') {
+  } else if (key == 't' || key == 'T') {
     console.log('trash?');
     // guessRecyclable = false;
     // guessLock = true;
@@ -161,3 +192,21 @@ function timeDiff(h1,m1,s1, h2,m2,s2) {
   sDiff = hDiff*3600 + mDiff*60 + s2 - s1;
   return sDiff;
 }
+
+function drawMissed(startX, startY) {
+  // noStroke();
+  // fill(0,0,0);
+  // textSize(12);
+  // posX = startX;
+  // posY = startY;
+  // for (let i = 0; i < wrongImages.length; i++) {
+  //   const element = wrongImages[i];
+  //   // elementImg = loadImage(element);
+  //   image(element, posX, posY, imageWidth/4, imageHeight/4);
+  //   const textX = posX + (imageWidth/4) + 25;
+  //   text(`This is actually ${wrongTypes[i]}`, textX, posY+12);
+  //   posY = posY + imageHeight/4 + 25;
+  //   // createDiv(`${i}`);
+  // }
+}
+
