@@ -11,3 +11,11 @@ canvas {
   text-align: center;
   margin: auto;
 }
+.story {
+  margin: 100px;
+}
+.story img {
+  margin: 10px 0px;
+  width: 256px;
+  height: auto;
+}
