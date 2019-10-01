@@ -177,7 +177,7 @@ function keyPressed() {
 }
 
 function mousePressed() {
-  if (winMouseX > width/2) {
+  if (mouseX > width/2) {
     // Right
     guess(true);
   } else {
