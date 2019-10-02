@@ -40,11 +40,6 @@ function setup() {
   rectWidth = width / 4;
   index = 0;
   imgSelect = 0;
-  // img = loadImage('assets/01.jpg');
-  // imgName = 
-  // imgRecyclable = false;
-
-
   numCorrect = 0;
   numGuessed = 0;
   
@@ -59,7 +54,6 @@ function setup() {
 
 function setStage() {
   background(255);
-  // getImage();
   noStroke();
   textSize(12);
   text(`r (right) - recycle\nt (left) - trash`, (width-imageWidth)/2, (height-imageHeight)/2+imageHeight+15);
@@ -102,26 +96,16 @@ function draw() {
     text(`Scroll down to see incorrect items`, topLeftW, topLeftH+30);
     gameOver = true;
     // Draw a white box over image
-    // stroke(0,255,0);
     fill(255,255,255)
     // rect(topLeftW, topLeftH, imageWidth, imageHeight);
     // drawMissed(topLeftW, topLeftH);
     fill(0,0,0);
-    
   } else {
     textSize(12);
-    text(`Accuracy: ${numCorrect/numGuessed}\nScore: ${score} | Time Remaining: ${timeLeft}`,topLeftW,topLeftH-20);//imageHeight+100);
+    text(`Accuracy: ${accuracy(numCorrect,numGuessed)}\nScore: ${score} | Time Remaining: ${timeLeft}`,topLeftW,topLeftH-20);//imageHeight+100);
     image(img, topLeftW, topLeftH, imageWidth, imageHeight);  
   }
-  // keep draw() here to continue looping while waiting for keys
-  stroke(0);
-  // index = 0; index < 200; index++) {
-  if (imgRecyclable) {
-    // fill(0,255,0)
-  } else {
-    // fill(0,0,0)
-  }
-  
+  // stroke(0);  
   // line(topLeftW, topLeftH, imageWidth+topLeftW, topLeftH);
 }
 
@@ -139,41 +123,20 @@ function guess(guessRecyclable) {
       divHTML = `<img src="${imgName}" alt="${tn}" height=${imageHeight/4}> This is actually ${tn}.<br>`;
       var divElement = createDiv(divHTML);
       divElement.parent('missedImages');
-      // createImg(imgName, alt=imgName);
-      // createP(`This is actually ${tn}`);
       getImage();
     }
   }
 }
 
 function keyPressed() {
-  // let keyIndex = -1;
   guessRecyclable = false;
-  // guessLock = false;
   if (key == 'r' || key == 'R') {
-    // keyIndex = key.charCodeAt(0) - 'a'.charCodeAt(0);
     console.log('recycle?');
-    // guessRecyclable = true;
-    // guessLock = true;
     guess(true);
   } else if (key == 't' || key == 'T') {
     console.log('trash?');
-    // guessRecyclable = false;
-    // guessLock = true;
     guess(false);
   }
-
-  // if(guessLock && !gameOver) {
-  //   numGuessed++;
-  //   if (guessRecyclable === imgRecyclable) {
-  //     console.log('Correct!');
-  //     numCorrect++;
-  //     getImage();
-  //   } else {
-  //     console.log('Wrong!');
-  //     getImage();
-  //   }
-  // }
 }
 
 function mousePressed() {
@@ -193,20 +156,10 @@ function timeDiff(h1,m1,s1, h2,m2,s2) {
   return sDiff;
 }
 
-function drawMissed(startX, startY) {
-  // noStroke();
-  // fill(0,0,0);
-  // textSize(12);
-  // posX = startX;
-  // posY = startY;
-  // for (let i = 0; i < wrongImages.length; i++) {
-  //   const element = wrongImages[i];
-  //   // elementImg = loadImage(element);
-  //   image(element, posX, posY, imageWidth/4, imageHeight/4);
-  //   const textX = posX + (imageWidth/4) + 25;
-  //   text(`This is actually ${wrongTypes[i]}`, textX, posY+12);
-  //   posY = posY + imageHeight/4 + 25;
-  //   // createDiv(`${i}`);
-  // }
+function accuracy(numCorrect, numGuessed) {
+  if (!(numGuessed)) {
+    return 0;
+  }
+  return numCorrect/numGuessed;
 }
 
